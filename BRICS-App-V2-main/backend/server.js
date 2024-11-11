@@ -181,9 +181,23 @@ app.post('/login', async (req, res) => {
     return res.status(400).json({ error: 'Invalid credentials' });
   }
 
-  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-  res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', maxAge: 3600000 });
-  res.json({ message: 'Login successful' });
+  const token = jwt.sign({ id: user._id, role: 'user' }, process.env.JWT_SECRET, { expiresIn: '1h' });
+  
+  res.cookie('token', token, { 
+    httpOnly: true, 
+    secure: process.env.NODE_ENV === 'production', 
+    maxAge: 3600000 
+  });
+  
+  res.json({
+    success: true,
+    data: {
+      userName: user.userName,
+      accNumber: user.accNumber,
+      role: 'user',
+      token: token
+    }
+  });
 });
 
 app.post('/employee-login', async (req, res) => {

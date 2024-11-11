@@ -55,9 +55,10 @@ function Register() {
   };
 
   return (
-    <div className="register-container">
-      <h2>Create New Account</h2>
-      <form onSubmit={handleSubmit} className="register-form">
+    <div className="auth-container">
+      <h2 className="form-title">Create New Account</h2>
+      
+      <form onSubmit={handleSubmit} className="auth-form">
         <div className="form-group">
           <input
             type="text"
@@ -66,6 +67,7 @@ function Register() {
             onChange={handleChange}
             placeholder="First Name"
             required
+            autoComplete="given-name"
           />
         </div>
 
@@ -77,6 +79,7 @@ function Register() {
             onChange={handleChange}
             placeholder="Surname"
             required
+            autoComplete="family-name"
           />
         </div>
 
@@ -88,6 +91,7 @@ function Register() {
             onChange={handleChange}
             placeholder="Username"
             required
+            autoComplete="username"
           />
         </div>
 
@@ -100,6 +104,7 @@ function Register() {
             placeholder="ID Number"
             pattern="[0-9]*"
             required
+            autoComplete="off"
           />
         </div>
 
@@ -128,6 +133,7 @@ function Register() {
             placeholder="Mobile Number"
             pattern="[0-9]*"
             required
+            autoComplete="tel"
           />
         </div>
 
@@ -140,6 +146,7 @@ function Register() {
             placeholder="Account Number"
             pattern="[0-9]*"
             required
+            autoComplete="off"
           />
         </div>
 
@@ -151,6 +158,7 @@ function Register() {
             onChange={handleChange}
             placeholder="Password"
             required
+            autoComplete="new-password"
           />
           <small className="password-hint">
             Password must contain at least 8 characters, one uppercase letter, and one special character
@@ -159,11 +167,11 @@ function Register() {
 
         {error && <div className="error-message">{error}</div>}
 
-        <button type="submit" className="register-button">
+        <button type="submit" className="auth-button">
           Register
         </button>
 
-        <div className="login-link">
+        <div className="auth-link">
           <p>Already have an account? <Link to="/login">Login here</Link></p>
         </div>
       </form>

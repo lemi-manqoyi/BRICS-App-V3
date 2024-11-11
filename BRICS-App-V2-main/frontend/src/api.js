@@ -49,7 +49,12 @@ export async function loginUserAPI({ username, password, accNumber }) {
     throw new Error(error || 'Invalid login');
   }
 
-  return response.json();
+  const data = await response.json();
+  if (!data.success || !data.data || !data.data.token) {
+    throw new Error('Invalid response from server');
+  }
+
+  return data;
 }
 
 export async function loginEmployeeAPI({ username, password }) {

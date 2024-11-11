@@ -1,26 +1,39 @@
-// src/AuthContext.js
 import React, { createContext, useState, useContext } from 'react';
-import { loginUserAPI, loginEmployeeAPI } from './api'; // Functions are defined for API calls
+import { loginUserAPI, loginEmployeeAPI } from './api';
 
-const AuthContext = createContext();
+const AuthContext = createContext(null);
 
-export function useAuth() {
-  return useContext(AuthContext);
-}
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
 
-export function AuthProvider({ children }) {
+export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
 
-  const login = async (credentials, isEmployee) => {
+  const login = async (credentials, isEmployee = false) => {
     try {
-      let userData;
-      if (isEmployee) {
-        userData = await loginEmployeeAPI(credentials);
-      } else {
-        userData = await loginUserAPI(credentials);
+      const response = isEmployee 
+        ? await loginEmployeeAPI(credentials)
+        : await loginUserAPI(credentials);
+
+      if (!response || !response.success || !response.data) {
+        throw new Error('Invalid response from server');
       }
+
+      const userData = {
+        ...response.data,
+        role: isEmployee ? 'employee' : 'user'
+      };
+
       setUser(userData);
-      return { success: true };
+      setToken(response.data.token);
+      
+      return { success: true, role: userData.role };
     } catch (error) {
       console.error('Login failed:', error);
       return { success: false, message: error.message };
@@ -29,11 +42,21 @@ export function AuthProvider({ children }) {
 
   const logout = () => {
     setUser(null);
+    setToken(null);
+    localStorage.clear();
+  };
+
+  const value = {
+    user,
+    token,
+    login,
+    logout,
+    isAuthenticated: !!token
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
-}
+};

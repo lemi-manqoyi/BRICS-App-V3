@@ -1,171 +1,188 @@
-.App {
-    padding: 20px;
-    max-width: 1200px;
+/* Base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #f5f5f5;
+    color: #2d3748;
+    font-size: 18px;
+    line-height: 1.6;
+  }
+  
+  /* App Container */
+  .App {
+    max-width: 1400px;
     margin: 0 auto;
+    padding: 30px;
   }
   
-  form {
+  /* Navigation Styles */
+  .nav-bar, .dashboard-nav {
+    background-color: #ffffff;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 3rem;
     display: flex;
-    flex-direction: column;
-    gap: 10px;
-    max-width: 400px;
-    margin: 20px auto;
+    justify-content: space-between;
+    align-items: center;
   }
   
+  .nav-brand {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #2d3748;
+  }
+  
+  .nav-links {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+  }
+  
+  .nav-links a {
+    color: #4a5568;
+    text-decoration: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    transition: all 0.2s ease;
+  }
+  
+  /* Form Elements */
   input, select, button {
-    padding: 10px;
-    margin: 5px 0;
+    padding: 16px 24px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    width: 100%;
+    margin: 8px 0;
+  }
+  
+  input:focus, select:focus {
+    outline: none;
+    border-color: #4299e1;
+    box-shadow: 0 0 0 4px rgba(66, 153, 225, 0.2);
   }
   
   button {
-    background-color: #007bff;
+    background-color: #4299e1;
     color: white;
     border: none;
     cursor: pointer;
+    font-weight: 600;
+    padding: 16px 32px;
+    font-size: 1.2rem;
+    transition: all 0.2s ease;
   }
   
-  button:hover {
-    background-color: #0056b3;
-  }
-
-  /* Add these styles to your existing global.css */
-.login-container {
-    max-width: 400px;
-    margin: 40px auto;
-    padding: 20px;
+  /* Dashboard Layouts */
+  .dashboard-container {
     background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    margin: 20px 0;
+  }
+  
+  .welcome-section {
+    margin-bottom: 40px;
+  }
+  
+  .welcome-section h1 {
+    font-size: 2.5rem;
+    margin-bottom: 16px;
+  }
+  
+  .welcome-section p {
+    font-size: 1.3rem;
+  }
+  
+  .dashboard-widgets {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 40px;
+    margin-top: 40px;
+  }
+  
+  .widget {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Transaction Styles */
+  .transactions-container {
+    padding: 30px;
+  }
+  
+  .transaction-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-bottom: 40px;
+  }
+  
+  /* Table Styles */
+  .data-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 8px;
+    margin-top: 24px;
+  }
+  
+  .data-table th,
+  .data-table td {
+    padding: 20px;
+    text-align: left;
+    font-size: 1.1rem;
+  }
+  
+  /* Authentication Forms */
+  .auth-container {
+    max-width: 600px;
+    margin: 60px auto;
+    padding: 40px;
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .form-title {
+    font-size: 2rem;
+    margin-bottom: 32px;
   }
   
   .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 24px;
   }
   
-  .form-group input[type="text"],
-  .form-group input[type="password"] {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 16px;
-  }
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    body {
+      font-size: 16px;
+    }
   
-  .checkbox {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+    .App {
+      padding: 20px;
+    }
   
-  .checkbox input[type="checkbox"] {
-    margin-right: 8px;
-  }
+    .dashboard-widgets {
+      grid-template-columns: 1fr;
+    }
   
-  .login-button {
-    width: 100%;
-    padding: 12px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
+    .nav-links {
+      gap: 16px;
+    }
   
-  .login-button:hover {
-    background-color: #0056b3;
-  }
-  
-  .error-message {
-    color: #dc3545;
-    margin-bottom: 15px;
-    font-size: 14px;
-  }
-  
-  .register-link {
-    text-align: center;
-    margin-top: 15px;
-  }
-  
-  .register-link a {
-    color: #007bff;
-    text-decoration: none;
-  }
-  
-  .register-link a:hover {
-    text-decoration: underline;
-  }
-
-  .register-container {
-    max-width: 500px;
-    margin: 40px auto;
-    padding: 20px;
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .register-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-  
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-  }
-  
-  .form-group input,
-  .form-group select {
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 16px;
-    width: 100%;
-  }
-  
-  .password-hint {
-    font-size: 12px;
-    color: #666;
-    margin-top: 4px;
-  }
-  
-  .error-message {
-    color: #dc3545;
-    padding: 10px;
-    border-radius: 4px;
-    background-color: #f8d7da;
-    margin-bottom: 10px;
-  }
-  
-  .register-button {
-    padding: 12px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-  
-  .register-button:hover {
-    background-color: #0056b3;
-  }
-  
-  .login-link {
-    text-align: center;
-    margin-top: 15px;
-  }
-  
-  .login-link a {
-    color: #007bff;
-    text-decoration: none;
-  }
-  
-  .login-link a:hover {
-    text-decoration: underline;
+    input, select, button {
+      padding: 14px 20px;
+    }
   }

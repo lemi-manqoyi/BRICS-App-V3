@@ -1,82 +1,116 @@
-// src/components/Transactions.js
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../AuthContext';
 import { createTransaction, getTransactions } from '../api';
 
 function Transactions() {
-  const { auth } = useAuth();
+  const { token } = useAuth();
   const [transactions, setTransactions] = useState([]);
   const [transactionName, setTransactionName] = useState('');
   const [transactionAmount, setTransactionAmount] = useState('');
   const [transactionType, setTransactionType] = useState('');
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     async function fetchTransactions() {
+      if (!token) return;
       try {
-        const response = await getTransactions(auth.token);
+        const response = await getTransactions(token);
         setTransactions(response.data);
+        setError(null);
       } catch (err) {
+        setError("Failed to fetch transactions");
         console.error("Failed to fetch transactions:", err);
       }
     }
     fetchTransactions();
-  }, [auth.token]);
+  }, [token]);
 
   const handleAddTransaction = async () => {
+    if (!transactionName || !transactionAmount || !transactionType) {
+      setError("Please fill in all fields");
+      return;
+    }
+
     const newTransaction = {
       name: transactionName,
-      amount: transactionAmount,
+      amount: parseFloat(transactionAmount),
       type: transactionType
     };
+
     try {
-      await createTransaction(newTransaction, auth.token);
-      setTransactions([...transactions, newTransaction]);
+      const response = await createTransaction(newTransaction, token);
+      setTransactions([...transactions, response.data]);
       setTransactionName('');
       setTransactionAmount('');
       setTransactionType('');
+      setError(null);
     } catch (err) {
+      setError("Failed to add transaction");
       console.error("Failed to add transaction:", err);
     }
   };
 
   return (
-    <div>
+    <div className="transactions-container">
       <h2>Transactions</h2>
-      <input
-        type="text"
-        value={transactionName}
-        onChange={(e) => setTransactionName(e.target.value)}
-        placeholder="Transaction Name"
-        required
-      />
-      <input
-        type="number"
-        value={transactionAmount}
-        onChange={(e) => setTransactionAmount(e.target.value)}
-        placeholder="Transaction Amount"
-        required
-      />
-      <select
-        value={transactionType}
-        onChange={(e) => setTransactionType(e.target.value)}
-        required
-      >
-        <option value="">Select Transaction Type</option>
-        <option value="deposit">Deposit</option>
-        <option value="withdrawal">Withdrawal</option>
-        <option value="payment">Payment</option>
-        <option value="transfer">Transfer</option>
-      </select>
-      <button onClick={handleAddTransaction}>Add Transaction</button>
+      {error && <div className="error-message">{error}</div>}
+      
+      <div className="transaction-form">
+        <input
+          type="text"
+          value={transactionName}
+          onChange={(e) => setTransactionName(e.target.value)}
+          placeholder="Transaction Name"
+          required
+        />
+        <input
+          type="number"
+          value={transactionAmount}
+          onChange={(e) => setTransactionAmount(e.target.value)}
+          placeholder="Amount"
+          required
+        />
+        <select
+          value={transactionType}
+          onChange={(e) => setTransactionType(e.target.value)}
+          required
+        >
+          <option value="">Select Type</option>
+          <option value="deposit">Deposit</option>
+          <option value="withdrawal">Withdrawal</option>
+          <option value="payment">Payment</option>
+          <option value="transfer">Transfer</option>
+        </select>
+        <button onClick={handleAddTransaction}>Add Transaction</button>
+      </div>
 
-      <h3>Transaction History</h3>
-      <ul>
-        {transactions.map((transaction, index) => (
-          <li key={index}>
-            {transaction.name} - {transaction.type} - {transaction.amount}
-          </li>
-        ))}
-      </ul>
+      <div className="transaction-history">
+        <h3>Transaction History</h3>
+        {transactions.length === 0 ? (
+          <p>No transactions found</p>
+        ) : (
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {transactions.map((transaction, index) => (
+                <tr key={index}>
+                  <td>{transaction.name}</td>
+                  <td>{transaction.type}</td>
+                  <td>{transaction.amount}</td>
+                  <td>{new Date(transaction.date).toLocaleDateString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
     </div>
   );
 }

@@ -2,54 +2,66 @@ import React, { useState } from 'react';
 import { useAuth } from '../AuthContext';
 import { loginUserAPI, loginEmployeeAPI } from '../api';
 import { useNavigate, Link } from 'react-router-dom';
+import '../styles/global.css';
 
 function Login() {
   const { login } = useAuth();
+  const navigate = useNavigate();
   const [isEmployee, setIsEmployee] = useState(false);
   const [form, setForm] = useState({
     userName: '',
     accNumber: '',
     password: ''
   });
-  const [error, setError] = useState(null);
-  const navigate = useNavigate();
+  const [error, setError] = useState('');
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setForm(prevForm => ({
+      ...prevForm,
+      [name]: value
+    }));
+  };
+
+  const handleEmployeeToggle = (e) => {
+    setIsEmployee(e.target.checked);
+    // Clear account number when switching to employee login
+    if (e.target.checked) {
+      setForm(prev => ({
+        ...prev,
+        accNumber: ''
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
-
+    setError('');
+  
     try {
-      if (isEmployee) {
-        // Employee login
-        const response = await loginEmployeeAPI({
-          username: form.userName,
-          password: form.password
-        });
-        login({ ...response, role: 'employee' });
-        navigate('/employee-dashboard');
+      const credentials = {
+        username: form.userName,
+        password: form.password,
+        ...(isEmployee ? {} : { accNumber: form.accNumber })
+      };
+  
+      const loginResponse = await login(credentials, isEmployee);
+  
+      if (loginResponse.success) {
+        navigate(isEmployee ? '/employee-dashboard' : '/user-dashboard');
       } else {
-        // User login
-        const response = await loginUserAPI({
-          username: form.userName,
-          password: form.password,
-          accNumber: form.accNumber
-        });
-        login({ ...response, role: 'user' });
-        navigate('/user-dashboard');
+        setError(loginResponse.message || 'Login failed');
       }
     } catch (err) {
-      setError(err.message || 'Login failed. Please check your credentials.');
+      setError('An unexpected error occurred. Please try again.');
     }
   };
 
   return (
-    <div className="login-container">
-      <h2>{isEmployee ? 'Employee Login' : 'User Login'}</h2>
-      <form onSubmit={handleSubmit}>
+    <div className="auth-container">
+      <h2 className="form-title">{isEmployee ? 'Employee Login' : 'User Login'}</h2>
+      
+      <form onSubmit={handleSubmit} className="auth-form">
         <div className="form-group">
           <input
             type="text"
@@ -58,6 +70,7 @@ function Login() {
             onChange={handleChange}
             placeholder="Username"
             required
+            autoComplete="username"
           />
         </div>
 
@@ -69,7 +82,8 @@ function Login() {
               value={form.accNumber}
               onChange={handleChange}
               placeholder="Account Number"
-              required
+              required={!isEmployee}
+              autoComplete="off"
             />
           </div>
         )}
@@ -82,19 +96,16 @@ function Login() {
             onChange={handleChange}
             placeholder={isEmployee ? "Employee Password" : "Password"}
             required
+            autoComplete="current-password"
           />
         </div>
 
-        <div className="form-group checkbox">
+        <div className="checkbox-wrapper">
           <label>
             <input
               type="checkbox"
               checked={isEmployee}
-              onChange={() => {
-                setIsEmployee(!isEmployee);
-                setForm({ userName: '', accNumber: '', password: '' });
-                setError(null);
-              }}
+              onChange={handleEmployeeToggle}
             />
             Employee Login
           </label>
@@ -102,12 +113,12 @@ function Login() {
 
         {error && <div className="error-message">{error}</div>}
 
-        <button type="submit" className="login-button">
+        <button type="submit" className="auth-button">
           Login
         </button>
 
         {!isEmployee && (
-          <div className="register-link">
+          <div className="auth-link">
             <p>Don't have an account? <Link to="/register">Register here</Link></p>
           </div>
         )}

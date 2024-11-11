@@ -1,12 +1,17 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 
 function ProtectedRoute({ children }) {
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
+  const location = useLocation();
 
-  if (!user) {
-    return <Navigate to="/login" replace />;
+  if (!isAuthenticated) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  if (location.pathname.includes('employee') && user?.role !== 'employee') {
+    return <Navigate to="/user-dashboard" replace />;
   }
 
   return children;

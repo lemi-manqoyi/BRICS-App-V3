@@ -1,13 +1,12 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
+import { AuthProvider } from './AuthContext';
 import App from './App';
-import { BrowserRouter } from 'react-router-dom'; // If you are using React Router
-import { AuthProvider } from './AuthContext'; // Assuming you have an AuthContext file
-import './index.css'; // Import any global CSS styles
 import './styles/global.css';
 
-// Create a root element and render the main App component
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const container = document.getElementById('root');
+const root = createRoot(container);
 
 root.render(
   <React.StrictMode>

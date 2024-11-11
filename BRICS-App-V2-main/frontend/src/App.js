@@ -14,43 +14,34 @@ function App() {
       <nav className="nav-bar">
         <h1>BRICS Banking</h1>
       </nav>
-      <Routes>
-        <Route path="/" element={<Navigate to="/login" />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route 
-          path="/user-dashboard" 
-          element={
+      <main className="main-content">
+        <Routes>
+          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/user-dashboard" element={
             <ProtectedRoute>
               <UserDashboard />
             </ProtectedRoute>
-          } 
-        />
-        <Route 
-          path="/employee-dashboard" 
-          element={
+          } />
+          <Route path="/employee-dashboard" element={
             <ProtectedRoute>
               <EmployeeDashboard />
             </ProtectedRoute>
-          } 
-        />
-        <Route 
-          path="/budget" 
-          element={
+          } />
+          <Route path="/budget" element={
             <ProtectedRoute>
               <Budget />
             </ProtectedRoute>
-          } 
-        />
-        <Route 
-          path="/transactions" 
-          element={
+          } />
+          <Route path="/transactions" element={
             <ProtectedRoute>
               <Transactions />
             </ProtectedRoute>
-          } 
-        />
-      </Routes>
+          } />
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </Routes>
+      </main>
     </div>
   );
 }

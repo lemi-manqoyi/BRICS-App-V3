@@ -4,15 +4,16 @@ import { useAuth } from '../AuthContext';
 import { getBudget, updateBudget } from '../api';
 
 function Budget() {
-  const { auth } = useAuth();
+  const { token } = useAuth();
   const [budget, setBudget] = useState(null);
   const [newBudget, setNewBudget] = useState('');
   const [currency, setCurrency] = useState('');
 
   useEffect(() => {
     async function fetchBudget() {
+      if (!token) return;
       try {
-        const response = await getBudget(auth.token);
+        const response = await getBudget(token);
         setBudget(response.data.amount);
         setCurrency(response.data.currency);
       } catch (err) {
@@ -20,11 +21,11 @@ function Budget() {
       }
     }
     fetchBudget();
-  }, [auth.token]);
+  }, [token]);
 
   const handleUpdateBudget = async () => {
     try {
-      await updateBudget({ amount: newBudget }, auth.token);
+      await updateBudget({ amount: newBudget }, token); // Changed auth.token to token
       setBudget(newBudget);
       setNewBudget('');
     } catch (err) {
