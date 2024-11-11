@@ -20,19 +20,20 @@ export const AuthProvider = ({ children }) => {
       const response = isEmployee 
         ? await loginEmployeeAPI(credentials)
         : await loginUserAPI(credentials);
-
+  
       if (!response || !response.success || !response.data) {
         throw new Error('Invalid response from server');
       }
-
+  
       const userData = {
         ...response.data,
         role: isEmployee ? 'employee' : 'user'
       };
-
+  
       setUser(userData);
       setToken(response.data.token);
-      
+      console.log("User logged in:", userData); // Log user data
+  
       return { success: true, role: userData.role };
     } catch (error) {
       console.error('Login failed:', error);
