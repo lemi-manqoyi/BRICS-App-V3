@@ -1,35 +1,33 @@
-// src/components/Budget.js
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../AuthContext';
 import { getBudget, updateBudget } from '../api';
 
 function Budget() {
-  const { token } = useAuth();
   const [budget, setBudget] = useState(null);
   const [newBudget, setNewBudget] = useState('');
   const [currency, setCurrency] = useState('');
 
   useEffect(() => {
     async function fetchBudget() {
-      if (!token) return;
       try {
-        const response = await getBudget(token);
-        setBudget(response.data.amount);
-        setCurrency(response.data.currency);
+        const response = await getBudget();
+        setBudget(response.amount);
+        setCurrency(response.currency);
       } catch (err) {
-        console.error("Failed to fetch account data:", err);
+        console.error("Failed to fetch budget:", err);
+        alert("Error fetching budget. Please check your authentication.");
       }
     }
     fetchBudget();
-  }, [token]);
+  }, []);
 
   const handleUpdateBudget = async () => {
     try {
-      await updateBudget({ amount: newBudget }, token); // Changed auth.token to token
+      await updateBudget({ amount: newBudget });
       setBudget(newBudget);
       setNewBudget('');
     } catch (err) {
-      console.error("Failed to update account:", err);
+      console.error("Failed to update budget:", err);
+      alert("Error updating budget. Please check your authentication.");
     }
   };
 

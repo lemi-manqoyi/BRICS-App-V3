@@ -77,9 +77,10 @@ export async function loginEmployeeAPI({ username, password }) {
   return response.json();
 }
 
-// Budget related API calls
-export async function getBudget(token) {
+export async function getBudget() {
+  const token = await getCsrfToken();
   const response = await fetch('/api/budget', {
+    method: 'POST', 
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
@@ -94,13 +95,15 @@ export async function getBudget(token) {
   return response.json();
 }
 
-export async function updateBudget(budgetData, token) {
+export async function updateBudget(budgetData) {
+  const token = await getCsrfToken();
   const response = await fetch('/api/budget', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
     },
+    credentials: 'include',
     body: JSON.stringify(budgetData),
   });
 
@@ -112,24 +115,27 @@ export async function updateBudget(budgetData, token) {
   return response.json();
 }
 
-// Transaction related API calls
-export async function getTransactions(token) {
-  const response = await fetch('/api/transactions', {
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    },
-  });
-
-  if (!response.ok) {
-    const { error } = await response.json();
-    throw new Error(error || 'Failed to fetch transactions');
+export async function getTransactions() {
+    const token = await getCsrfToken();
+    console.log("Token for getTransactions:", token); // Log the token
+    const response = await fetch('/api/transactions', {
+      method: 'POST', 
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+    });
+  
+    if (!response.ok) {
+      const { error } = await response.json();
+      throw new Error(error || 'Failed to fetch transactions');
+    }
+  
+    return response.json();
   }
 
-  return response.json();
-}
-
-export async function createTransaction(transactionData, token) {
+export async function createTransaction(transactionData) {
+  const token = await getCsrfToken();
   const response = await fetch('/api/transactions', {
     method: 'POST',
     headers: {

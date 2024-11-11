@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../AuthContext';
 import { createTransaction, getTransactions } from '../api';
 
 function Transactions() {
-  const { token } = useAuth();
   const [transactions, setTransactions] = useState([]);
   const [transactionName, setTransactionName] = useState('');
   const [transactionAmount, setTransactionAmount] = useState('');
@@ -12,18 +10,18 @@ function Transactions() {
 
   useEffect(() => {
     async function fetchTransactions() {
-      if (!token) return;
       try {
-        const response = await getTransactions(token);
-        setTransactions(response.data);
+        const response = await getTransactions();
+        setTransactions(response);
         setError(null);
       } catch (err) {
         setError("Failed to fetch transactions");
         console.error("Failed to fetch transactions:", err);
+        alert("Error fetching transactions. Please check your authentication.");
       }
     }
     fetchTransactions();
-  }, [token]);
+  }, []);
 
   const handleAddTransaction = async () => {
     if (!transactionName || !transactionAmount || !transactionType) {
@@ -38,8 +36,8 @@ function Transactions() {
     };
 
     try {
-      const response = await createTransaction(newTransaction, token);
-      setTransactions([...transactions, response.data]);
+      const response = await createTransaction(newTransaction);
+      setTransactions([...transactions, response]);
       setTransactionName('');
       setTransactionAmount('');
       setTransactionType('');
@@ -47,6 +45,7 @@ function Transactions() {
     } catch (err) {
       setError("Failed to add transaction");
       console.error("Failed to add transaction:", err);
+      alert("Error adding transaction. Please check your authentication.");
     }
   };
 
