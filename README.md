@@ -53,7 +53,7 @@ The BRICS Banking Application is a full-stack web application designed to provid
 
 1. Clone the repository:
    bash
-git clone https://github.com/yourusername/BRICS-App-V2.git
+git clone https://github.com/Dillon-Duncan/BRICS-App-V2-main.git
 cd BRICS-App-V2
 
 2. Install backend dependencies:
